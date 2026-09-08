@@ -1,0 +1,50 @@
+{
+  "_note": "Synthetic demo bookings. All phone numbers are ACMA-reserved fictional Australian numbers (0491 570 xxx range) — they belong to no one. mock_scenario drives the offline provider only; live demo runs use --override-phone to route every call to the operator's own handset.",
+  "bookings": [
+    {
+      "booking_id": "bk-001",
+      "customer_name": "Priya Raman",
+      "phone": "+61491570156",
+      "date": "2026-09-11",
+      "time": "08:00",
+      "service": "Hot water inspection",
+      "mock_scenario": "confirm"
+    },
+    {
+      "booking_id": "bk-002",
+      "customer_name": "Dean Whitford",
+      "phone": "+61491570157",
+      "date": "2026-09-11",
+      "time": "09:30",
+      "service": "Blocked drain",
+      "mock_scenario": "reschedule"
+    },
+    {
+      "booking_id": "bk-003",
+      "customer_name": "Alma Kovacs",
+      "phone": "+61491570158",
+      "date": "2026-09-11",
+      "time": "11:00",
+      "service": "Tap replacement",
+      "mock_scenario": "confirm"
+    },
+    {
+      "booking_id": "bk-004",
+      "customer_name": "Sione Tuilagi",
+      "phone": "+61491570159",
+      "date": "2026-09-11",
+      "time": "13:30",
+      "service": "Gas compliance check",
+      "mock_scenario": "no_answer"
+    },
+    {
+      "booking_id": "bk-005",
+      "customer_name": "Ruth Calloway",
+      "phone": "+61491570110",
+      "date": "2026-09-11",
+      "time": "15:00",
+      "service": "Leak investigation",
+      "mock_scenario": "cancel"
+    }
+  ]
+}
