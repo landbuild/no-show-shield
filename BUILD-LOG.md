@@ -81,3 +81,20 @@ C2 "Most Valuable Feedback" survey draft (`C2-FEEDBACK-DRAFT.md`).
   C2 feedback draft, Nathan 15-minute connection guide.
 - Spend: AU$0. No compute quote requested; none needed (local Python +
   free-tier calls only).
+
+## Live validation — 2026-09-10 (day 28)
+
+Two validation calls to the operator's handset (budget 2/8 used):
+1. Call 1 parsed `unknown` → root cause found in minutes: `create_and_wait`
+   returns a plain JSON dict (verified in SDK source), but the provider read it
+   with `getattr` — the attribute miss made every verdict fall through to
+   UNKNOWN. The field name itself (`structured_result.confirmation_status`) was
+   correct all along; only the access pattern was wrong.
+2. Post-fix call parsed `confirmed` end-to-end: live call → conversation →
+   structured verdict → calendar write-back → clean operator summary.
+   Raw-response debug dump confirmed ground truth: verdict at top-level
+   `structured_result` with fields `confirmation_status`, `notes`.
+
+Fifth consecutive instance of the sprint's mock-vs-real pattern: first live
+execution surfaced exactly one integration defect. The demo (Sitting B) now
+exercises a proven path. Remaining budget: 6 calls for ≤3 takes + rehearsal.
