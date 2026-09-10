@@ -1,0 +1,14 @@
+{
+  "_note": "Single-booking validation schedule \u2014 field-mapping check only.",
+  "bookings": [
+    {
+      "booking_id": "bk-001",
+      "customer_name": "Priya Raman",
+      "phone": "+61491570156",
+      "date": "2026-09-11",
+      "time": "08:00",
+      "service": "Hot water inspection",
+      "mock_scenario": "confirm"
+    }
+  ]
+}
