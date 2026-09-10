@@ -138,15 +138,54 @@ class CalleProvider:
         except Exception as exc:  # provider/network failure must never crash a run
             return CallResult(CALL_FAILED, notes=f"provider error: {exc}")
 
-        structured = getattr(call, "structured_result", None) or {}
+        # The SDK returns a plain JSON dict (verified against calle-ai source:
+        # create_and_wait -> JsonObject), not an attribute-style object. Read
+        # both shapes, and probe the plausible homes for the structured verdict.
+        def _get(obj, key, default=None):
+            if isinstance(obj, dict):
+                return obj.get(key, default)
+            return getattr(obj, key, default)
+
+        structured = None
+        for key in ("structured_result", "result", "structured_output", "output"):
+            candidate = _get(call, key)
+            if isinstance(candidate, dict) and candidate:
+                structured = candidate
+                break
+        if structured is None:
+            recips = _get(call, "recipient_results") or _get(call, "recipients") or []
+            if isinstance(recips, list) and recips:
+                structured = (
+                    _get(recips[0], "structured_result")
+                    or _get(recips[0], "result")
+                    or {}
+                )
+        if not isinstance(structured, dict):
+            structured = {}
+
+        # Ground-truth dump for validation runs: the full raw response, so an
+        # unexpected shape is diagnosable without burning another call.
+        # (last-call-debug.json is gitignored.)
+        try:
+            import json as _json
+
+            with open("last-call-debug.json", "w") as fh:
+                _json.dump(call if isinstance(call, dict) else repr(call), fh, indent=2, default=str)
+        except Exception:
+            pass
+
         status = _STATUS_MAP.get(structured.get("confirmation_status"), UNKNOWN)
-        confidence = getattr(call, "completion_confidence", None)
-        score = getattr(confidence, "score", None) if confidence else None
+        conf = _get(call, "completion_confidence")
+        score = conf.get("score") if isinstance(conf, dict) else getattr(conf, "score", None)
         return CallResult(
             status=status,
             reschedule_preference=structured.get("reschedule_preference", ""),
             notes=structured.get("notes", ""),
-            call_id=getattr(call, "id", None),
+            call_id=_get(call, "id"),
             confidence=score,
-            raw={"provider": "call-e", "status": getattr(call, "status", None)},
+            raw={
+                "provider": "call-e",
+                "status": _get(call, "status"),
+                "response_keys": sorted(call.keys()) if isinstance(call, dict) else None,
+            },
         )
