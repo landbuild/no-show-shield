@@ -45,23 +45,79 @@ RESULT_SCHEMA = {
 }
 
 
+def humanise_when(date_str: str, time_str: str, today=None) -> str:
+    """Turn an ISO date + 24h time into something a person would say aloud.
+
+    '2026-09-12' + '09:30' (called the day before) -> 'tomorrow at 9:30 in the
+    morning'. Spoken agents read ISO dates out digit by digit, which is the
+    fastest way to sound like a robot.
+    """
+    from datetime import date as _date, datetime
+
+    try:
+        d = datetime.strptime(date_str, "%Y-%m-%d").date()
+        t = datetime.strptime(time_str, "%H:%M").time()
+    except (TypeError, ValueError):
+        return f"on {date_str} at {time_str}"
+
+    today = today or _date.today()
+    delta = (d - today).days
+    if delta == 0:
+        day = "today"
+    elif delta == 1:
+        day = "tomorrow"
+    elif 2 <= delta <= 6:
+        day = f"this {d.strftime('%A')}"
+    else:
+        day = f"{d.strftime('%A')} the {d.day}"
+
+    part = (
+        "in the morning" if t.hour < 12
+        else "in the afternoon" if t.hour < 17
+        else "in the evening"
+    )
+    hour12 = t.hour % 12 or 12
+    clock = f"{hour12}:{t.minute:02d}" if t.minute else str(hour12)
+    return f"{day} at {clock} {part}"
+
+
 def build_task(booking: Booking, business_name: str, target_phone: Optional[str] = None) -> str:
-    """The natural-language task handed to CALL-E for one confirmation call."""
+    """The natural-language task handed to CALL-E for one confirmation call.
+
+    Carries explicit manner guidance as well as the procedure: the first live
+    calls sounded stilted because the task said what to do and nothing about
+    how to sound, and fed the model raw ISO dates.
+    """
     phone = target_phone or booking.phone
+    when = humanise_when(booking.date, booking.time)
     return (
-        f"Call {phone}. You are an automated assistant calling on behalf of "
-        f"{business_name}. Say clearly at the start that you are an AI assistant "
-        f"making a quick appointment confirmation call. "
-        f"Ask for {booking.customer_name}, and confirm their appointment for "
-        f"{booking.service} on {booking.date} at {booking.time}. "
-        f"If they confirm, thank them and end the call. "
-        f"If they want to reschedule, ask for their preferred day and time and "
-        f"tell them {business_name} will text to lock it in — do not promise a "
-        f"specific new slot yourself. "
-        f"If they cancel, acknowledge politely and end the call. "
-        f"If the person says it is a wrong number or asks not to be called, "
-        f"apologise, end the call immediately, and report the outcome as unknown "
-        f"with a note. Keep the whole call under 90 seconds and never argue."
+        f"Call {phone} and ask for {booking.customer_name}. You are making a short "
+        f"appointment-confirmation call for {business_name}, an Australian trades "
+        f"business.\n\n"
+        f"HOW TO SOUND\n"
+        f"- Warm, brisk, human. Short sentences, contractions, everyday words. Like a "
+        f"good receptionist, not someone reading a script.\n"
+        f"- In your first breath, say once that you're an AI assistant calling from "
+        f"{business_name}. Don't mention it again.\n"
+        f"- Ask one thing, then stop and listen. Never stack two questions in a turn.\n"
+        f"- Keep every turn to a sentence or two. Don't recite their answer back in full.\n"
+        f"- Say the time the way a person would: \"{when}\". Never read a date as digits "
+        f"or in year-month-day form.\n"
+        f"- No filler pleasantries, no corporate phrasing, no apologising for existing.\n"
+        f"- If they talk over you, stop and let them finish.\n\n"
+        f"WHAT TO DO\n"
+        f"1. Greet them, say who you are, check you're speaking with {booking.customer_name}.\n"
+        f"2. Say you're confirming their {booking.service.lower()} {when}, and ask if that "
+        f"still suits.\n"
+        f"3. If it suits: thank them, say you'll see them then, end the call.\n"
+        f"4. If they want a different time: ask what day and time would suit, say the new "
+        f"preference back once so they know you caught it, and tell them {business_name} "
+        f"will text to lock it in. Never promise a specific slot yourself.\n"
+        f"5. If they cancel: no problem, say you'll take it out of the book, end politely.\n"
+        f"6. Wrong number or asked not to call: apologise briefly, end immediately, report "
+        f"the outcome as unknown with a note.\n\n"
+        f"Keep the whole call under 90 seconds. Never argue and never try to talk them out "
+        f"of a change."
     )
 
 

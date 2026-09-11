@@ -98,3 +98,20 @@ Two validation calls to the operator's handset (budget 2/8 used):
 Fifth consecutive instance of the sprint's mock-vs-real pattern: first live
 execution surfaced exactly one integration defect. The demo (Sitting B) now
 exercises a proven path. Remaining budget: 6 calls for ≤3 takes + rehearsal.
+
+## Prompt quality pass — 2026-09-11 (recording session)
+
+Live calls returned correct structured verdicts but sounded stilted. Root cause
+in `build_task`: the prompt specified procedure only, with no manner guidance,
+and interpolated raw ISO values ("... on 2026-09-12 at 09:30"), which spoken
+agents read out digit by digit.
+
+Fixes: new `humanise_when()` renders "tomorrow at 9:30 in the morning" relative
+to the call date; the task now carries an explicit HOW TO SOUND block (short
+turns, one question at a time, contractions, single AI disclosure up front, no
+filler, yield on interruption) alongside the numbered procedure. Disclosure and
+the never-promise-a-slot rule are unchanged.
+
+Also logged as C2 feedback: the platform exposes no transcript, so a call with a
+correct verdict but poor phrasing is invisible to the API — we only caught this
+because a human was on the other end of the line.

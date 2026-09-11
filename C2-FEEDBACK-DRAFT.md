@@ -95,3 +95,21 @@ behaviour and whether it varies with load; (c) consider a `dial_deadline` or
 callback for "not dialled within N seconds" so automated runs can fail fast
 instead of blocking for minutes. This matters most for live/demo use, where a
 silent four-minute block is indistinguishable from a broken integration.
+
+## 8. No transcript access for completed calls
+
+`calls.list_events` returns 44 operational events for a one-minute call
+(`call.started`, `call.in_progress`, a long run of `call.updated`), none of which
+carry conversation text. The only record of what was actually said is the
+model's own `summary` and `evidence` — its account of the call, not the call.
+
+**Why it matters:** for appointment confirmation the transcript *is* the audit
+trail. When a customer later says "I told your system Thursday", the operator
+needs the words, not a paraphrase. It is also the only way to debug a call that
+produced the right structured result via a bad-sounding conversation — which we
+hit: our first two live calls returned correct verdicts while the phrasing was
+poor, and nothing in the API would have told us that.
+
+**Actionable suggestions:** expose a transcript (or recording URL) on the call
+object or via a `calls.transcript` endpoint; failing that, document clearly that
+no verbatim record is retained, so builders know to capture their own.
