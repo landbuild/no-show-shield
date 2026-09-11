@@ -55,9 +55,10 @@ incorporated: the CALL-E SDK and the Python standard library.
 
 ## Form fields
 
-- **Demo video URL:** [NATHAN — YouTube link after upload]
-- **Pull request URL:** [NATHAN — after the PR click on
-  CALLE-AI/awesome-phone-call-agents]
-- **CALL-E account email:** [NATHAN]
+- **Demo video URL:** https://youtu.be/hOCdDwYFgmU
+- **Pull request URL:** https://github.com/CALLE-AI/awesome-phone-call-agents/pull/483
+- **CALL-E account email:** [the Gmail you created for the CALL-E platform]
 - **Demo app URL (optional):** leave blank (local CLI project)
 - **Built with:** python, call-e, calle-ai
+
+- **Source repo:** https://github.com/landbuild/no-show-shield

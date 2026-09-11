@@ -6,7 +6,7 @@ result schema (`confirmed / reschedule_requested / cancelled / no_answer /
 unknown`), writes outcomes back to the calendar, and emits an operator
 summary of the slots that need attention.
 
-Source project: https://github.com/[NATHAN-GH-USER]/no-show-shield
+Source project: https://github.com/landbuild/no-show-shield
 Hackathon entry for CALL-E "Your Code Is Calling".
 
 ## Setup
@@ -14,7 +14,7 @@ Hackathon entry for CALL-E "Your Code Is Calling".
 ```bash
 pip install calle-ai
 export CALLE_API_KEY="..."        # dashboard.heycall-e.com -> API keys
-git clone https://github.com/[NATHAN-GH-USER]/no-show-shield
+git clone https://github.com/landbuild/no-show-shield
 cd no-show-shield
 python3 -m noshow_shield sync data/demo-schedule.json
 ```
