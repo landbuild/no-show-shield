@@ -6,3 +6,4 @@ call-ledger.json
 .venv/
 last-call-debug.json
 footage/
+.DS_Store
