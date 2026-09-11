@@ -5,3 +5,4 @@ call-ledger.json
 .env
 .venv/
 last-call-debug.json
+footage/
