@@ -11,7 +11,7 @@ import json
 import os
 from datetime import datetime, timezone
 
-DEFAULT_CAP = 8  # of the 20 free calls; the rest are reserved for demo retakes
+DEFAULT_CAP = 14  # of the 20 free calls; raised from 8 on 2026-09-11 for the recording session (6 still reserved)
 
 
 class BudgetExceeded(RuntimeError):

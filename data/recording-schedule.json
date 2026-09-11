@@ -1,0 +1,23 @@
+{
+  "_note": "Recording-day schedule. Fictional customers on ACMA-reserved numbers; every live call is routed to the operator's own handset via --override-phone.",
+  "bookings": [
+    {
+      "booking_id": "bk-r01",
+      "customer_name": "Priya Raman",
+      "phone": "+61491570156",
+      "date": "2026-09-12",
+      "time": "08:00",
+      "service": "Hot water inspection",
+      "mock_scenario": "confirm"
+    },
+    {
+      "booking_id": "bk-r02",
+      "customer_name": "Dean Whitford",
+      "phone": "+61491570157",
+      "date": "2026-09-12",
+      "time": "09:30",
+      "service": "Blocked drain",
+      "mock_scenario": "reschedule"
+    }
+  ]
+}
