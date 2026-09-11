@@ -79,3 +79,19 @@ an unattended agent like this.
 *Authorship note if the survey asks: feedback drafted from the project's
 build log with AI assistance (Anthropic Claude), reviewed and submitted by
 the entrant.*
+
+## 7. First-call initiation latency (observed 2026-09-11, recording session)
+
+`calls.create_and_wait` returned only after roughly **four minutes** on the
+first call of a session; subsequent calls in the same session connected
+noticeably faster. From the client's side there is no signal distinguishing
+"queued behind a cold start" from "hung" — `create` returns an id immediately
+and `wait_for_result` simply polls a status that stays non-terminal.
+
+**Actionable suggestions:** (a) expose a queue/dial state in the call object
+(e.g. `status: queued|dialing|in_progress`) so clients can show progress rather
+than guess; (b) document expected time-to-dial, including any cold-start
+behaviour and whether it varies with load; (c) consider a `dial_deadline` or
+callback for "not dialled within N seconds" so automated runs can fail fast
+instead of blocking for minutes. This matters most for live/demo use, where a
+silent four-minute block is indistinguishable from a broken integration.
