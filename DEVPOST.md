@@ -39,11 +39,31 @@ call, bails out instantly on "wrong number", and live demo calls can only be
 routed to a number the operator supplies at run time — no real customer
 number exists anywhere in the project.
 
-**What we learned.** Small result schemas extract reliably from live calls;
-putting the destination number inside the task string (per the quickstart
-pattern) makes number-hygiene the caller's job, so we wrapped it in E.164
-validation and an override path; and a 20-call free tier forces exactly the
-mock-first architecture that made the project more testable anyway.
+**What we learned.** Four things, all from calls that actually happened:
+
+1. *Correct data, wrong voice.* Our first live calls returned perfect
+structured results while sounding robotic — and nothing in the API would have
+told us, because CALL-E exposes a summary and evidence but no transcript. We
+only caught it because a human was holding the phone. If the call quality
+matters, put a person on the far end before you ship.
+2. *Never pass ISO dates to a spoken agent.* We were interpolating
+"2026-09-12 at 09:30" into the task; the agent read it out digit by digit.
+Rendering "tomorrow at 9:30 in the morning" before the string reaches the
+model fixed it instantly.
+3. *A task needs manner, not just procedure.* The original prompt said what to
+do and nothing about how to sound. Adding an explicit block — short turns, one
+question at a time, disclose the AI once up front, yield if interrupted — did
+more for call quality than any schema change.
+4. *First-call latency is real.* The first call of a session took roughly four
+minutes between `create` and the phone ringing; later calls connected in
+seconds. There is no queued/dialing state to distinguish "waiting" from
+"broken", which matters when a run blocks on it.
+
+Small result schemas extract reliably; putting the destination number inside
+the task string (per the quickstart pattern) makes number-hygiene the caller's
+job, so we wrapped it in E.164 validation and an override path; and a 20-call
+free tier forces exactly the mock-first architecture that made the project
+more testable anyway.
 
 **What's honestly not in it.** No SMS send-back, no calendar-platform
 integrations, no retry scheduler — a JSON file in, an updated JSON file and a
