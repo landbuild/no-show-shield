@@ -82,3 +82,16 @@ data/demo-schedule.json --sync--> calendar.json (CalendarStore)
 Built with AI coding assistants (Anthropic Claude) under the direction of the
 entrant. See [AI-DISCLOSURE.md](AI-DISCLOSURE.md). Pre-existing work
 incorporated: the CALL-E SDK and Python standard library only.
+
+## Scope (aligned with the upstream skill entry)
+
+This is an **experimental batch reference implementation**, not production
+software. Evaluate it with mock/preview mode and the fictional calendar data
+shipped in `data/`. Any live evaluation is a **supervised, operator-controlled
+handset demonstration** — every call routed to a number the operator supplies
+at run time — and not an unattended campaign against real customers.
+
+Wording adopted from the CALL-E maintainers' review of
+[awesome-phone-call-agents#483](https://github.com/CALLE-AI/awesome-phone-call-agents/pull/483),
+which qualified the original framing. They were right: the first version
+implied unattended production use, which the project has not earned.
